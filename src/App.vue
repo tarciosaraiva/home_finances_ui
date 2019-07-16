@@ -19,5 +19,6 @@
     <main>
       <router-view/>
     </main>
+    <modals-container/>
   </div>
 </template>
