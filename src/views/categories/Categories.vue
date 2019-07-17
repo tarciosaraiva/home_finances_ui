@@ -16,7 +16,7 @@
           <td>{{category.id}}</td>
           <td>{{category.name}}</td>
           <td><a href @click.prevent.stop="handleDelete(category.id)">Delete</a></td>
-          <td><a href @click.prevent.stop="handleEdit(category.id)">Edit</a></td>
+          <td><a href @click.prevent.stop="handleEdit(category)">Edit</a></td>
         </tr>
       </tbody>
       <tfoot>
@@ -35,7 +35,7 @@ import { mapActions, mapState } from 'vuex';
 import { Component, Vue } from 'vue-property-decorator';
 
 import CategoryForm from './CategoryForm.vue';
-import { IHomeFinanceState, ICategory } from '../types';
+import { IHomeFinanceState, ICategory } from '@/types';
 
 @Component({
   computed: mapState({
@@ -43,19 +43,20 @@ import { IHomeFinanceState, ICategory } from '../types';
     errors: (state: IHomeFinanceState): string[] => state.errors,
     categories: (state: IHomeFinanceState): ICategory[] => state.entities.categories,
   }),
-  methods: mapActions(['loadCategories', 'deleteCategory']),
+  methods: mapActions(['loadCategories', 'saveCategory', 'deleteCategory']),
 })
 export default class Categories extends Vue {
 
   public loadCategories!: () => void;
   public deleteCategory!: (id: number) => void;
+  public saveCategory!: (category: ICategory) => void;
 
   public handleNew() {
-    this.$modal.show(CategoryForm);
+    this.showModal(Object.create({}));
   }
 
-  public handleEdit(id: number) {
-    console.log('implement me') //tslint:disable-line
+  public handleEdit(category: ICategory) {
+    this.showModal(category);
   }
 
   public handleDelete(id: number) {
@@ -65,5 +66,16 @@ export default class Categories extends Vue {
   public created() {
     this.loadCategories();
   }
+
+  private handleSave(category: ICategory) {
+    this.saveCategory(category);
+  }
+
+  private showModal(category: ICategory) {
+    this.$modal.show(CategoryForm,
+      { category, handleSave: this.handleSave },
+      { classes: ['flex-vmodal', 'v--modal'], draggable: false, adaptive: true });
+  }
+
 }
 </script>

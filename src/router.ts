@@ -15,12 +15,12 @@ const router = new Router({
     {
       path: '/categories',
       name: 'categories',
-      component: () => import(/* webpackChunkName: "categories" */ '@/views/Categories.vue'),
+      component: () => import(/* webpackChunkName: "categories" */ '@/views/categories/Categories.vue'),
     },
     {
       path: '/buckets',
       name: 'buckets',
-      component: Home,
+      component: () => import(/* webpackChunkName: "buckets" */ '@/views/buckets/Buckets.vue'),
     },
     {
       path: '/accounts',

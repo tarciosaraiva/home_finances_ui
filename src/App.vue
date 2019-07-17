@@ -22,3 +22,9 @@
     <modals-container/>
   </div>
 </template>
+
+<style>
+.flex-vmodal {
+    display: flex;
+}
+</style>

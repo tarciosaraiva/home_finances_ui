@@ -1,5 +1,5 @@
 import * as types from '@/store/mutationTypes';
-import { IHomeFinanceState, ICategory } from '@/types';
+import { IHomeFinanceState, ICategory, IBucket } from '@/types';
 
 export default {
   [types.REQUEST_PENDING](state: IHomeFinanceState) {
@@ -15,5 +15,8 @@ export default {
   },
   [types.SET_CATEGORIES](state: IHomeFinanceState, categories: ICategory[]) {
     state.entities.categories = categories;
+  },
+  [types.SET_BUCKETS](state: IHomeFinanceState, buckets: IBucket[]) {
+    state.entities.buckets = buckets;
   },
 };

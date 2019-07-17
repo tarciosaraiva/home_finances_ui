@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 
 const theme = {};
 
-Vue.use(VModal, { dynamic: true, injectModalsContainer: true });
+Vue.use(VModal, { dynamic: true });
 Vue.use(VueGridStyled, { theme });
 
 new Vue({

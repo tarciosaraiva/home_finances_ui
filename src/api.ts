@@ -3,6 +3,7 @@ import uuid from 'uuid';
 
 import store from '@/store';
 import { REQUEST_PENDING, REQUEST_FAILED, REQUEST_SUCCEED } from '@/store/mutationTypes';
+import { ICategory } from './types';
 
 const BASE_API_URL = `//localhost:5000`;
 
@@ -42,6 +43,28 @@ export default {
     },
     delete(id: number) {
       return request.delete(`admin/categories/${id}`);
+    },
+    save(category: ICategory) {
+      if (category.id) {
+        return request.put(`admin/categories/${category.id}`, category);
+      }
+
+      return request.post('admin/categories', category);
+    },
+  },
+  buckets: {
+    all() {
+      return request.get('admin/buckets');
+    },
+    delete(id: number) {
+      return request.delete(`admin/buckets/${id}`);
+    },
+    save(category: ICategory) {
+      if (category.id) {
+        return request.put(`admin/buckets/${category.id}`, category);
+      }
+
+      return request.post('admin/buckets', category);
     },
   },
 };
