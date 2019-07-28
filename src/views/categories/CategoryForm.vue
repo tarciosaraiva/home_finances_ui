@@ -1,51 +1,63 @@
 <template>
-    <v-flex flexDirection="column" flexWrap="wrap" :m="3">
-        <v-box :width="[1]">
-            <h3>{{title}}</h3>
-        </v-box>
-        <v-box tag="form" :width="[1]">
-            <v-flex flexWrap="wrap" alignItems="center">
-                <v-box tag="label" :width="[1/4]" for="name">Name</v-box>
-                <v-box tag="input" :width="[3/4]" input type="text" v-model="categoryData.name" name="name" id="name" />
-            </v-flex>
-        </v-box>
-        <v-box :width="[1]">
-            <button @click.prevent.stop="save" type="submit">Save</button>
-        </v-box>
-    </v-flex>
+  <modal-form :entity="category" :entityType="'category'" :handleSave="handleSave">
+    <template v-slot:form-fields="{entityData}">
+      <v-box :width="[1/5]">
+        <label for="name">Name</label>
+      </v-box>
+      <v-box tag="span" :width="[4/5]">
+        <input type="text" v-model="entityData.name" name="name" id="name" required />
+      </v-box>
+    </template>
+  </modal-form>
 </template>
 
-<script>
-export default {
-    data: {
-        categoryData: {},
-    },
-    props: {
-        category: Object,
-        handleSave: {
-            type: Function,
-            default: () => false,
-        },
-    },
-    computed: {
-        title() {
-            return this.categoryData.id ? 'Update category' : 'Create new category';
-        },
-    },
-    methods: {
-        save() {
-            this.handleSave(this.categoryData);
-            this.$emit('close');
-        },
-    },
-    created() {
-        this.categoryData = JSON.parse(JSON.stringify(this.category));
-    },
-};
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import { mapActions } from 'vuex';
+
+import ModalForm from '@/components/ModalForm.vue';
+import { IHomeFinanceState, ICategory } from '@/types';
+
+const CategoryFormProps = Vue.extend({
+  props: {
+    id: String,
+  },
+});
+
+@Component({
+  components: { ModalForm },
+  methods: mapActions(['saveCategory', 'retrieveCategory']),
+  watch: { $route: 'fetchData' },
+})
+export default class CategoryForm extends CategoryFormProps {
+  private category: ICategory = Object.create({});
+
+  private saveCategory!: (category: ICategory) => void;
+  private retrieveCategory!: (id: number) => Promise<ICategory>;
+
+  private handleSave(category: ICategory) {
+    this.saveCategory(category);
+  }
+
+  private created() {
+    this.fetchData();
+  }
+
+  private async fetchData() {
+    if (this.id) {
+      const categoryId = Number(this.id);
+      this.category = await this.retrieveCategory(categoryId);
+    }
+  }
+}
 </script>
 
 <style scoped>
-form {
-    flex: 1;
+span {
+  display: flex;
+}
+
+input {
+  flex: 1;
 }
 </style>

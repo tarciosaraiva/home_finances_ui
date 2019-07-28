@@ -16,6 +16,9 @@ export default {
   [types.SET_CATEGORIES](state: IHomeFinanceState, categories: ICategory[]) {
     state.entities.categories = categories;
   },
+  [types.ADD_CATEGORY_TO_LIST](state: IHomeFinanceState, category: ICategory) {
+    state.entities.categories.push(category);
+  },
   [types.SET_BUCKETS](state: IHomeFinanceState, buckets: IBucket[]) {
     state.entities.buckets = buckets;
   },

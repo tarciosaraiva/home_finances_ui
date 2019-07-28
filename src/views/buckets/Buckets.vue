@@ -18,17 +18,18 @@
           <td>{{bucket.name}}</td>
           <td>{{bucket.threshold}}</td>
           <td><a href @click.prevent.stop="handleDelete(bucket.id)">Delete</a></td>
-          <td><a href @click.prevent.stop="handleEdit(bucket)">Edit</a></td>
+          <td><router-link :to="`/buckets/${bucket.id}/edit`">Edit</router-link></td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <td colspan="3">
-            <a href @click.prevent.stop="handleNew">Add new bucket</a>
+            <router-link to="/buckets/new">Add new bucket</router-link>
           </td>
         </tr>
       </tfoot>
     </table>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -45,21 +46,12 @@ import { IHomeFinanceState, IBucket } from '@/types';
     errors: (state: IHomeFinanceState): string[] => state.errors,
     buckets: (state: IHomeFinanceState): IBucket[] => state.entities.buckets,
   }),
-  methods: mapActions(['loadBuckets', 'saveBucket', 'deleteBucket']),
+  methods: mapActions(['loadBuckets', 'deleteBucket']),
 })
 export default class Buckets extends Vue {
 
   public loadBuckets!: () => void;
   public deleteBucket!: (id: number) => void;
-  public saveBucket!: (bucket: IBucket) => void;
-
-  public handleNew() {
-    this.showModal(Object.create({}));
-  }
-
-  public handleEdit(bucket: IBucket) {
-    this.showModal(bucket);
-  }
 
   public handleDelete(id: number) {
     this.deleteBucket(id);
@@ -68,16 +60,5 @@ export default class Buckets extends Vue {
   public created() {
     this.loadBuckets();
   }
-
-  private handleSave(bucket: IBucket) {
-    this.saveBucket(bucket);
-  }
-
-  private showModal(bucket: IBucket) {
-    this.$modal.show(BucketForm,
-      { bucket, handleSave: this.handleSave },
-      { classes: ['flex-vmodal', 'v--modal'], draggable: false, adaptive: true });
-  }
-
 }
 </script>

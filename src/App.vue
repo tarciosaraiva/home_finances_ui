@@ -2,16 +2,16 @@
   <div id="app">
     <header>
       <v-flex flexWrap="wrap" maxWidth="64em" justifyContent="space-between" alignItems="center">
-        <v-box :width="[1/2, 1/2, 1/4]">
+        <v-box>
           <router-link to="/">Home</router-link>
         </v-box>
-        <v-box :width="[1/2, 1/2, 1/4]">
+        <v-box>
           <router-link to="/categories">Categories</router-link>
         </v-box>
-        <v-box :width="[1/2, 1/2, 1/4]">
+        <v-box>
           <router-link to="/buckets">Buckets</router-link>
         </v-box>
-        <v-box :width="[1/2, 1/2, 1/4]">
+        <v-box>
           <router-link to="/accounts">Accounts</router-link>
         </v-box>
       </v-flex>
@@ -19,7 +19,6 @@
     <main>
       <router-view/>
     </main>
-    <modals-container/>
   </div>
 </template>
 

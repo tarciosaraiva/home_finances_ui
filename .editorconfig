@@ -13,6 +13,6 @@ insert_final_newline = true
 [*.{js,py,ts}]
 charset = utf-8
 
-[*.{js,ts,json,yml}]
+[*.{js,ts,json,yml,vue}]
 indent_style = space
 indent_size = 2

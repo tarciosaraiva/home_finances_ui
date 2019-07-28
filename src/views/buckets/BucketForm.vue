@@ -1,53 +1,69 @@
 <template>
-    <v-flex flexDirection="column" flexWrap="wrap" :m="3">
-        <v-box :width="[1]">
-            <h3>{{title}}</h3>
-        </v-box>
-        <v-box tag="form" :width="[1]">
-            <v-flex flexWrap="wrap" alignItems="center">
-                <v-box tag="label" :width="[1/4]" for="name" :mb="3">Name</v-box>
-                <v-box tag="input" :width="[3/4]" input type="text" v-model="bucketData.name" name="name" id="name" :mb="3" />
-                <v-box tag="label" :width="[1/4]" for="threshold" :mb="3">Threshold</v-box>
-                <v-box tag="input" :width="[3/4]" input type="number" v-model="bucketData.threshold" name="threshold" id="threshold" :mb="3" />
-            </v-flex>
-        </v-box>
-        <v-box :width="[1]">
-            <button @click.prevent.stop="save" type="submit">Save</button>
-        </v-box>
-    </v-flex>
+  <modal-form :entity="bucket" :entityType="'bucket'" :handleSave="handleSave">
+    <template v-slot:form-fields="{entityData}">
+      <v-box :width="[1/5]">
+        <label for="name">Name</label>
+      </v-box>
+      <v-box tag="span" :width="[4/5]">
+        <input type="text" v-model="entityData.name" name="name" id="name" />
+      </v-box>
+      <v-box :width="[1/5]">
+        <label for="threshold">Threshold</label>
+      </v-box>
+      <v-box tag="span" :width="[4/5]">
+        <input type="number" v-model="entityData.threshold" name="threshold" id="threshold" />
+      </v-box>
+    </template>
+  </modal-form>
 </template>
 
-<script>
-export default {
-    data: {
-        bucketData: {},
-    },
-    props: {
-        bucket: Object,
-        handleSave: {
-            type: Function,
-            default: () => false,
-        },
-    },
-    computed: {
-        title() {
-            return this.bucketData.id ? 'Update bucket' : 'Create new bucket';
-        },
-    },
-    methods: {
-        save() {
-            this.handleSave(this.bucketData);
-            this.$emit('close');
-        },
-    },
-    created() {
-        this.bucketData = JSON.parse(JSON.stringify(this.bucket));
-    },
-};
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import { mapActions } from 'vuex';
+
+import ModalForm from '@/components/ModalForm.vue';
+import { IHomeFinanceState, IBucket } from '@/types';
+
+const BucketFormProps = Vue.extend({
+  props: {
+    id: String,
+  },
+});
+
+@Component({
+  components: { ModalForm },
+  methods: mapActions(['saveBucket', 'retrieveBucket']),
+  watch: { $route: 'fetchData' },
+})
+export default class BucketForm extends BucketFormProps {
+  private bucket: IBucket = Object.create({});
+
+  private saveBucket!: (bucket: IBucket) => void;
+  private retrieveBucket!: (id: number) => Promise<IBucket>;
+
+  private handleSave(bucket: IBucket) {
+    this.saveBucket(bucket);
+  }
+
+  private created() {
+    this.fetchData();
+  }
+
+  private async fetchData() {
+    if (this.id) {
+      const bucketId = Number(this.id);
+      this.bucket = await this.retrieveBucket(bucketId);
+    }
+  }
+}
 </script>
 
 <style scoped>
-form {
-    flex: 1;
+span {
+  display: flex;
+}
+
+input {
+  flex: 1;
 }
 </style>

@@ -38,6 +38,9 @@ request.interceptors.response.use(
 
 export default {
   categories: {
+    get(id: number) {
+      return request.get(`admin/categories/${id}`);
+    },
     all() {
       return request.get('admin/categories');
     },
@@ -53,6 +56,9 @@ export default {
     },
   },
   buckets: {
+    get(id: number) {
+      return request.get(`admin/buckets/${id}`);
+    },
     all() {
       return request.get('admin/buckets');
     },

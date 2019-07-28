@@ -2,7 +2,6 @@
   <div class="categories">
     <h2>Categories</h2>
     <p v-if="loading">Loading...</p>
-    <p v-else-if="!loading && errors.length">{{errors}}</p>
     <table v-else>
       <thead>
         <tr>
@@ -16,17 +15,18 @@
           <td>{{category.id}}</td>
           <td>{{category.name}}</td>
           <td><a href @click.prevent.stop="handleDelete(category.id)">Delete</a></td>
-          <td><a href @click.prevent.stop="handleEdit(category)">Edit</a></td>
+          <td><router-link :to="`/categories/${category.id}/edit`">Edit</router-link></td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <td colspan="3">
-            <a href @click.prevent.stop="handleNew">Add new category</a>
+            <router-link to="/categories/new">Add new category</router-link>
           </td>
         </tr>
       </tfoot>
     </table>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -43,21 +43,14 @@ import { IHomeFinanceState, ICategory } from '@/types';
     errors: (state: IHomeFinanceState): string[] => state.errors,
     categories: (state: IHomeFinanceState): ICategory[] => state.entities.categories,
   }),
-  methods: mapActions(['loadCategories', 'saveCategory', 'deleteCategory']),
+  methods: mapActions(['loadCategories', 'deleteCategory']),
 })
 export default class Categories extends Vue {
 
+  public errors!: string[];
+
   public loadCategories!: () => void;
   public deleteCategory!: (id: number) => void;
-  public saveCategory!: (category: ICategory) => void;
-
-  public handleNew() {
-    this.showModal(Object.create({}));
-  }
-
-  public handleEdit(category: ICategory) {
-    this.showModal(category);
-  }
 
   public handleDelete(id: number) {
     this.deleteCategory(id);
@@ -66,16 +59,5 @@ export default class Categories extends Vue {
   public created() {
     this.loadCategories();
   }
-
-  private handleSave(category: ICategory) {
-    this.saveCategory(category);
-  }
-
-  private showModal(category: ICategory) {
-    this.$modal.show(CategoryForm,
-      { category, handleSave: this.handleSave },
-      { classes: ['flex-vmodal', 'v--modal'], draggable: false, adaptive: true });
-  }
-
 }
 </script>
